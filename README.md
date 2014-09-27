@@ -36,3 +36,6 @@ Alternatively, do these:
  1. Enter the container: `docker-enter wsproxy`
  2. Make the neccessary configurations on `/etc/apache2/sites-enabled` and on `/etc/hosts`.
  3. Restart apache2: `supervisorctl restart apache2`.
+
+**Note:** The command `docker-enter` can be installed like this:
+`docker run -v /usr/local/bin:/target jpetazzo/nsenter`
