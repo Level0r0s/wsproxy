@@ -11,3 +11,28 @@ In such a case the *Reverse Proxy* module of apache2 comes to the
 rescue. We can have a docker container with apache2 that forwards
 all the http requests to the other containers (webservers), behaving
 like a kind of http gateway or hub. This is what **wsproxy** does.
+
+Usage
+
+ + Get the code from github: `git clone https://github.com/dashohoxha/wsproxy`
+
+ + Make sure that the container of each webserver has been created, using commands like this:
+   `docker run -d --name=ws1 --hostname=example.org webserver-1`
+   Note that no HTTP ports are exposed to the host (for example using options -p 80:80 -p 443:443).
+
+ + Customize the configuration of the domains on `config/etc/apache2/sites-available/`.
+   Fix also the scripts `config.sh` and `run.sh` to reflect the change of domains.
+
+ + Build the docker image with the command `build.sh`, then create a container with the command `run.sh`.
+
+In case that web servers have changed, update the configurations and do again:
+
+    ./rm.sh
+    ./build.sh
+    ./run.sh
+
+Alternatively, do these:
+
+ 1. Enter the container: `docker-enter wsproxy`
+ 2. Make the neccessary configurations on `/etc/apache2/sites-enabled` and on `/etc/hosts`.
+ 3. Restart apache2: `supervisorctl restart apache2`.
