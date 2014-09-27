@@ -49,12 +49,12 @@ How it works
 
 HTTP requests for a domain are redirected to HTTPS with a
 configuration like this:
-#+BEGIN_EXAMPLE
+```
 <VirtualHost *:80>
 	ServerName example.org
 	RedirectPermanent / https://example.org/
 </VirtualHost>
-#+END_EXAMPLE
+```
 
 HTTPS requests are forwarded to another webserver/container with a
 configuration like this:
