@@ -1,5 +1,5 @@
 Web Server Proxy
-================
+----------------
 
 If we want to host several domains/subdomains on the same webserver
 we can use *name-based virtual hosting*. If we need to host these
@@ -42,3 +42,59 @@ Alternatively, do these:
 
 **Note:** The command `docker-enter` can be installed like this:
 `docker run -v /usr/local/bin:/target jpetazzo/nsenter`
+
+
+How it works
+------------
+
+HTTP requests for a domain are redirected to HTTPS with a
+configuration like this:
+#+BEGIN_EXAMPLE
+<VirtualHost *:80>
+	ServerName example.org
+	RedirectPermanent / https://example.org/
+</VirtualHost>
+#+END_EXAMPLE
+
+HTTPS requests are forwarded to another webserver/container with a
+configuration like this:
+```
+<IfModule mod_ssl.c>
+	<VirtualHost _default_:443>
+		ServerName example.org
+		ProxyPass / https://example.org/
+		ProxyPassReverse / https://example.org/
+
+		ProxyRequests off
+
+		SSLEngine on
+		SSLCertificateFile     /etc/ssl/certs/ssl-cert-snakeoil.pem
+		SSLCertificateKeyFile  /etc/ssl/private/ssl-cert-snakeoil.key
+
+		SSLProxyEngine on
+		SSLProxyVerify none
+		SSLProxyCheckPeerCN off
+		SSLProxyCheckPeerName off
+
+		BrowserMatch "MSIE [2-6]" \
+				nokeepalive ssl-unclean-shutdown \
+				downgrade-1.0 force-response-1.0
+		BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+	</VirtualHost>
+</IfModule>
+```
+
+It is important to note that the parameter `--link=bcl:example.org`
+that is passed to `docker run`, adds automatically a line like this
+on `/etc/hosts` of **wsproxy**:
+```
+172.17.0.3      example.org
+```
+Without this, apache2 would not know where to forward the request,
+or it might result in an endless loop if the domain is a real one.
+
+Also these apache2 modules have to be enabled:
+```
+a2enmod ssl proxy proxy_http proxy_connect proxy_balancer cache headers rewrite
+```
