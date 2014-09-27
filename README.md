@@ -15,15 +15,13 @@ like a kind of http gateway or hub. This is what **wsproxy** does.
 Usage
 -----
 
- + Get the code from github:
-
-   `git clone https://github.com/dashohoxha/wsproxy`
+ + Get the code from github: `git clone https://github.com/dashohoxha/wsproxy`
 
  + Make sure that the container of each webserver has been created, using commands like this:
 
    `docker run -d --name=ws1 --hostname=example.org webserver-1`
 
-   Note that no HTTP ports are exposed to the host (for example using options -p 80:80 -p 443:443).
+   Note that no HTTP ports are exposed to the host (for example using options `-p 80:80 -p 443:443`).
 
  + Customize the configuration of the domains on `config/etc/apache2/sites-available/`.
    Fix also the scripts `config.sh` and `run.sh` to reflect the change of domains.
