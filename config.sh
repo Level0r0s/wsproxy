@@ -16,6 +16,8 @@ cp -TdR $dir/config/ /
 a2enmod ssl proxy proxy_http proxy_connect proxy_balancer cache headers rewrite
 a2dissite 000-default
 a2ensite bcl bcl-ssl btr btr-ssl
+mkdir -p /var/lock/apache2
+mkdir -p /var/run/apache2/
 
 ### generates the file /etc/defaults/locale
 update-locale
