@@ -13,6 +13,7 @@ all the http requests to the other containers (webservers), behaving
 like a kind of http gateway or hub. This is what **wsproxy** does.
 
 Usage
+-----
 
  + Get the code from github: `git clone https://github.com/dashohoxha/wsproxy`
 
