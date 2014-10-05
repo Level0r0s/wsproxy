@@ -1,13 +1,8 @@
-FROM ubuntu:14.04
-RUN export DEBIAN_FRONTEND=noninteractive; apt-get update; apt-get -y upgrade
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 supervisor vim
+FROM ubuntu-upstart:14.04
 
-### Copy the source code and run the installer.
-COPY . /usr/local/src/wsproxy/
-ENV code_dir /usr/local/src/wsproxy
-WORKDIR /usr/local/src/wsproxy/
-RUN ["./config.sh"]
+RUN apt-get update; apt-get -y upgrade
+RUN apt-get -y purge openssh-server openssh-client ; apt-get -y autoremove
+RUN apt-get -y install vim apache2
 
-### Set the default command to run in the container.
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf", "--nodaemon"]
-
+COPY . /data/
+RUN ["/data/config.sh"]

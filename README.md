@@ -23,8 +23,8 @@ Usage
 
    Note that no HTTP ports are exposed to the host (for example using options `-p 80:80 -p 443:443`).
 
- + Customize the configuration of the domains on `config/etc/apache2/sites-available/`.
-   Fix also the scripts `config.sh` and `run.sh` to reflect the change of domains.
+ + Customize the sites configuration on `config/etc/apache2/`.
+   Fix also the script `run.sh` to reflect the change of sites.
 
  + Build the docker image with the command `build.sh`, then create a container with the command `run.sh`.
 
@@ -38,7 +38,7 @@ Alternatively, do these:
 
  1. Enter the container: `docker-enter wsproxy`
  2. Make the neccessary configurations on `/etc/apache2/sites-enabled` and on `/etc/hosts`.
- 3. Restart apache2: `supervisorctl restart apache2`.
+ 3. Restart apache2: `/etc/init.d/apache2 restart`.
 
 **Note:** The command `docker-enter` can be installed like this:
 `docker run -v /usr/local/bin:/target jpetazzo/nsenter`
