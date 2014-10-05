@@ -24,24 +24,18 @@ Usage
    Note that no HTTP ports are exposed to the host (for example using options `-p 80:80 -p 443:443`).
 
  + Customize the sites configuration on `config/etc/apache2/`.
-   Fix also the script `run.sh` to reflect the change of sites.
+
+ + For each container (webserver) find out its IP, like this:
+
+   `docker inspect -f '{{ .NetworkSettings.IPAddress }}' ws1`
+
+   Then update `config/etc/hosts` accordingly.
 
  + Build the docker image with the command `build.sh`, then create a container with the command `run.sh`.
 
-In case that web servers have changed, update the configurations and do again:
-
-    ./rm.sh
-    ./build.sh
-    ./run.sh
-
-Alternatively, do these:
-
- 1. Enter the container: `docker-enter wsproxy`
- 2. Make the neccessary configurations on `/etc/apache2/sites-enabled` and on `/etc/hosts`.
- 3. Restart apache2: `/etc/init.d/apache2 restart`.
-
-**Note:** The command `docker-enter` can be installed like this:
-`docker run -v /usr/local/bin:/target jpetazzo/nsenter`
+In case that webservers have changed, update the configurations on
+`config/etc/apache2/` and `config/etc/hosts`, and restart wsproxy:
+`docker restart wsproxy`.
 
 
 How it works
@@ -85,14 +79,9 @@ configuration like this:
 </IfModule>
 ```
 
-It is important to note that the parameter `--link=bcl:example.org`
-that is passed to `docker run`, adds automatically a line like this
-on `/etc/hosts` of **wsproxy**:
-```
-172.17.0.3      example.org
-```
-Without this, apache2 would not know where to forward the request,
-or it might result in an endless loop if the domain is a real one.
+It is important to note that without a line like this on `/etc/hosts`:
+`172.17.0.3 example.org`, apache2 would not know where to forward the
+request.
 
 Also these apache2 modules have to be enabled:
 ```
