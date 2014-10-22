@@ -17,25 +17,54 @@ Usage
 
  + Get the code from github: `git clone https://github.com/dashohoxha/wsproxy`
 
- + Make sure that the container of each webserver has been created, using commands like this:
+ + Build the image and create a container:
+   ```
+   wsproxy/build.sh
+   wsproxy/run.sh
+   ```
 
-   `docker run -d --name=ws1 --hostname=example.org webserver-1`
-
+ + Create the containers of each webserver using commands like this:
+   ```
+   docker run -d --name=ws1 --hostname=example1.org webserver-1
+   docker run -d --name=ws2 --hostname=example2.org webserver-2
+   ```
    Note that no HTTP ports are exposed to the host (for example using options `-p 80:80 -p 443:443`).
 
- + Customize the sites configuration on `config/etc/apache2/`.
+ + Add apache2 virtual domains for `example1.org` and `example2.org`:
+   ```
+   cd wsproxy/config/etc/apache2/sites-available/
 
- + For each container (webserver) find out its IP, like this:
+   cp bcl.conf xmp1.conf
+   sed -i xmp1.conf -e 's/example.org/example1.org/'
 
-   `docker inspect -f '{{ .NetworkSettings.IPAddress }}' ws1`
+   cp bcl-ssl.conf xmp1-ssl.conf
+   sed -i xmp1-ssl.conf -e 's/example.org/example1.org/'
 
-   Then update `config/etc/hosts` accordingly.
+   cp bcl.conf xmp2.conf
+   sed -i xmp2.conf -e 's/example.org/example2.org/'
 
- + Build the docker image with the command `build.sh`, then create a container with the command `run.sh`.
+   cp bcl-ssl.conf xmp2-ssl.conf
+   sed -i xmp2-ssl.conf -e 's/example.org/example2.org/'
 
-In case that webservers have changed, update the configurations on
-`config/etc/apache2/` and `config/etc/hosts`, and restart wsproxy:
-`docker restart wsproxy`.
+   cd ../sites-enabled/
+   ln -s ../sites-available/xmp1.conf .
+   ln -s ../sites-available/xmp1-ssl.conf .
+   ln -s ../sites-available/xmp2.conf .
+   ln -s ../sites-available/xmp2-ssl.conf .
+
+   cd ../../../../../
+   ```
+
+ + Edit `wsproxy/hosts.txt` and add these lines:
+   ```
+   ws1: example1.org
+   ws2: example2.org
+   ```
+
+ + Restart container wsproxy: `wsproxy/restart.sh`
+
+In case that webservers have changed, update the configurations on `wsproxy/config/etc/apache2/` and `wsproxy/hosts.txt`, and restart wsproxy: `wsproxy/restart.sh`.
+
 
 
 How it works
