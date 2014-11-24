@@ -65,14 +65,14 @@
     ws2: example2.org
     #+end_example
 
-  + Restart container /wsproxy/:
+  + Reload container /wsproxy/:
     #+begin_example
-    wsproxy/restart.sh
+    wsproxy/reload.sh
     #+end_example
 
   In case that webservers have changed, update the configurations on
-  ~wsproxy/config/etc/apache2/~ and ~wsproxy/hosts.txt~, and restart
-  wsproxy: =wsproxy/restart.sh=.
+  ~wsproxy/config/etc/apache2/~ and ~wsproxy/hosts.txt~, and reload
+  wsproxy: =wsproxy/reload.sh=.
 
 
 * How it works

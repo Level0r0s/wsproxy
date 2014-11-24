@@ -61,9 +61,9 @@ Usage
    ws2: example2.org
    ```
 
- + Restart container wsproxy: `wsproxy/restart.sh`
+ + Reload container wsproxy: `wsproxy/reload.sh`
 
-In case that webservers have changed, update the configurations on `wsproxy/config/etc/apache2/` and `wsproxy/hosts.txt`, and restart wsproxy: `wsproxy/restart.sh`.
+In case that webservers have changed, update the configurations on `wsproxy/config/etc/apache2/` and `wsproxy/hosts.txt`, and reload wsproxy: `wsproxy/reload.sh`.
 
 
 
