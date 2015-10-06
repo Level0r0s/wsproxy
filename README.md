@@ -30,40 +30,11 @@ Usage
    ```
    Note that no HTTP ports are exposed to the host (for example using options `-p 80:80 -p 443:443`).
 
- + Add apache2 virtual domains for `example1.org` and `example2.org`:
+ + Add domains for `example1.org` and `example2.org`:
    ```
-   cd wsproxy/config/etc/apache2/sites-available/
-
-   cp bcl.conf xmp1.conf
-   sed -i xmp1.conf -e 's/example.org/example1.org/'
-
-   cp bcl-ssl.conf xmp1-ssl.conf
-   sed -i xmp1-ssl.conf -e 's/example.org/example1.org/'
-
-   cp bcl.conf xmp2.conf
-   sed -i xmp2.conf -e 's/example.org/example2.org/'
-
-   cp bcl-ssl.conf xmp2-ssl.conf
-   sed -i xmp2-ssl.conf -e 's/example.org/example2.org/'
-
-   cd ../sites-enabled/
-   ln -s ../sites-available/xmp1.conf .
-   ln -s ../sites-available/xmp1-ssl.conf .
-   ln -s ../sites-available/xmp2.conf .
-   ln -s ../sites-available/xmp2-ssl.conf .
-
-   cd ../../../../../
+   wsproxy/domains-add.sh ws1 example1.org
+   wsproxy/domains-add.sh ws2 example2.org
    ```
-
- + Edit `wsproxy/hosts.txt` and add these lines:
-   ```
-   ws1: example1.org
-   ws2: example2.org
-   ```
-
- + Reload container wsproxy: `wsproxy/reload.sh`
-
-In case that webservers have changed, update the configurations on `wsproxy/config/etc/apache2/` and `wsproxy/hosts.txt`, and reload wsproxy: `wsproxy/reload.sh`.
 
 
 
