@@ -16,7 +16,7 @@ cd $(dirname $0)
 wsproxy=$(pwd)
 
 ### remove these domains, if they exist
-$wsproxy/domain-rm.sh $domains
+$wsproxy/domains-rm.sh $domains
 
 ### add apache2 config files for each domain
 cd $wsproxy/config/etc/apache2/
