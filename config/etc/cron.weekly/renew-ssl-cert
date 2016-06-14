@@ -1,0 +1,2 @@
+#!/bin/bash
+certbot renew --webroot --quiet --post-hook='/etc/init.d/apache2 reload'

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+usage() {
+    echo "Usage: $0 <email> <domain>... [-t,--test]"
+    exit 0
+}
+
+local opts test=0
+opts="$(getopt -o t -l test -- "$@")"
+local err=$?
+eval set -- "$opts"
+while true; do
+    case $1 in
+        -t|--test) test=1; shift ;;
+        --) shift; break ;;
+    esac
+done
+[[ $err == 0 ]] || usage
+
+email=$1 ; shift
+[[ -n $email ]] || usage
+
+domains="$@"
+[[ -n $domains ]] || usage
+
+### get the ssl cert
+domain_options=''
+for domain in $domains; do
+    domain_options+=" -d $domain"
+done
+dry_run=''
+[[ $test == 1 ]] && dry_run='--dry-run'
+certbot certonly --webroot -m $email --agree-tos \
+    -w /var/www $domain_options $dry_run
+
+### update config files
+first_domain=$(echo $domains | cut -d' ' -f1)
+for domain in $domains; do
+    sed -i /etc/apache2/sites-available/$domain-ssl.conf \
+        -e "s#SSLCertificateFile .*#SSLCertificateFile      /etc/letsencrypt/live/$first_domain/cert.pem#" \
+        -e "s#SSLCertificateKeyFile .*#SSLCertificateKeyFile   /etc/letsencrypt/live/$first_domain/privkey.pem#" \
+        -e "s#SSLCertificateChainFile .*#SSLCertificateChainFile /etc/letsencrypt/live/$first_domain/chain.pem#"
+done

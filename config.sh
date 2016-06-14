@@ -12,6 +12,11 @@ sed -i /root/.bashrc \
 dir=$(dirname $0)
 cp -TdR $dir/config/ /
 
+### letsencrypt
+mkdir -p /var/www/.well-known/acme-challange/
+mkdir -p /data/letsencrypt
+ln -s /data/letsencrypt /etc/letsencrypt
+
 ### configure apache2
 a2enmod ssl proxy proxy_http proxy_connect proxy_balancer cache headers rewrite
 
