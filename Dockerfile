@@ -7,7 +7,9 @@ RUN apt-get -y install vim apache2 wget
 # install certbot
 RUN wget https://dl.eff.org/certbot-auto; \
     chmod +x certbot-auto ; \
-    mv certbot-auto /usr/local/bin/certbot
+    mv certbot-auto /usr/local/bin/certbot ; \
+    certbot --os-packages-only ; \
+    certbot --version
 
 COPY . /data/
 RUN ["/data/config.sh"]

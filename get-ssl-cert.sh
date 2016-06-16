@@ -1,4 +1,5 @@
 #!/bin/bash
 
+args="$@"
 docker exec -it wsproxy env TERM=xterm \
-    script /dev/null -c "get-ssl-cert $@" -q
+    script /dev/null -c "/data/get-ssl-cert $args" -q

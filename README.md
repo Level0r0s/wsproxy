@@ -36,6 +36,11 @@ Usage
    wsproxy/domains-add.sh ws2 example2.org
    ```
 
+ + Get a letsencrypt.org free SSL cert for the domains:
+   ```
+   wsproxy/get-ssl-cert.sh info@example1.org example1.org example2.org --test
+   wsproxy/get-ssl-cert.sh info@example1.org example1.org example2.org
+   ```
 
 
 How it works
@@ -45,8 +50,11 @@ HTTP requests for a domain are redirected to HTTPS with a
 configuration like this:
 ```
 <VirtualHost *:80>
-	ServerName example.org
-	RedirectPermanent / https://example.org/
+    ServerName example.org
+    ProxyPass /.well-known !
+    ProxyPass / http://example.org/
+    ProxyPassReverse / http://example.org/
+    ProxyRequests off
 </VirtualHost>
 ```
 
@@ -54,28 +62,29 @@ HTTPS requests are forwarded to another webserver/container with a
 configuration like this:
 ```
 <IfModule mod_ssl.c>
-	<VirtualHost _default_:443>
-		ServerName example.org
-		ProxyPass / https://example.org/
-		ProxyPassReverse / https://example.org/
+    <VirtualHost _default_:443>
+        ServerName example.org
+        ProxyPass / https://example.org/
+        ProxyPassReverse / https://example.org/
 
-		ProxyRequests off
+        ProxyRequests off
 
-		SSLEngine on
-		SSLCertificateFile     /etc/ssl/certs/ssl-cert-snakeoil.pem
-		SSLCertificateKeyFile  /etc/ssl/private/ssl-cert-snakeoil.key
+        SSLEngine on
+        SSLCertificateFile     /etc/ssl/certs/ssl-cert-snakeoil.pem
+        SSLCertificateKeyFile  /etc/ssl/private/ssl-cert-snakeoil.key
+        #SSLCertificateChainFile /etc/ssl/certs/ssl-cert-snakeoil.pem
 
-		SSLProxyEngine on
-		SSLProxyVerify none
-		SSLProxyCheckPeerCN off
-		SSLProxyCheckPeerName off
+        SSLProxyEngine on
+        SSLProxyVerify none
+        SSLProxyCheckPeerCN off
+        SSLProxyCheckPeerName off
 
-		BrowserMatch "MSIE [2-6]" \
-				nokeepalive ssl-unclean-shutdown \
-				downgrade-1.0 force-response-1.0
-		BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+        BrowserMatch "MSIE [2-6]" \
+                nokeepalive ssl-unclean-shutdown \
+                downgrade-1.0 force-response-1.0
+        BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
-	</VirtualHost>
+    </VirtualHost>
 </IfModule>
 ```
 

@@ -13,8 +13,9 @@ dir=$(dirname $0)
 cp -TdR $dir/config/ /
 
 ### letsencrypt
-mkdir -p /var/www/.well-known/acme-challange/
+mkdir -p /var/www/.well-known/acme-challenge/
 mkdir -p /data/letsencrypt
+mv /etc/letsencrypt /etc/letsencrypt-bak
 ln -s /data/letsencrypt /etc/letsencrypt
 
 ### configure apache2

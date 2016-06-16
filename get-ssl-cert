@@ -5,9 +5,9 @@ usage() {
     exit 0
 }
 
-local opts test=0
+test=0
 opts="$(getopt -o t -l test -- "$@")"
-local err=$?
+err=$?
 eval set -- "$opts"
 while true; do
     case $1 in
@@ -35,9 +35,12 @@ certbot certonly --webroot -m $email --agree-tos \
 
 ### update config files
 first_domain=$(echo $domains | cut -d' ' -f1)
-for domain in $domains; do
-    sed -i /etc/apache2/sites-available/$domain-ssl.conf \
-        -e "s#SSLCertificateFile .*#SSLCertificateFile      /etc/letsencrypt/live/$first_domain/cert.pem#" \
-        -e "s#SSLCertificateKeyFile .*#SSLCertificateKeyFile   /etc/letsencrypt/live/$first_domain/privkey.pem#" \
-        -e "s#SSLCertificateChainFile .*#SSLCertificateChainFile /etc/letsencrypt/live/$first_domain/chain.pem#"
-done
+certdir=/etc/letsencrypt/live/$first_domain
+if [[ -d $certdir ]]; then
+    for domain in $domains; do
+        sed -i /etc/apache2/sites-available/$domain-ssl.conf \
+            -e "s|#?SSLCertificateFile .*|SSLCertificateFile      $certdir/cert.pem|" \
+            -e "s|#?SSLCertificateKeyFile .*|SSLCertificateKeyFile   $certdir/privkey.pem|" \
+            -e "s|#?SSLCertificateChainFile .*|SSLCertificateChainFile $certdir/chain.pem|"
+    done
+fi
