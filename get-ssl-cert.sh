@@ -41,10 +41,10 @@ docker exec -it wsproxy env TERM=xterm \
 
 ### update config files
 first_domain=$(echo $domains | cut -d' ' -f1)
-certdir=/etc/letsencrypt/live/$first_domain
-if [[ -d $certdir ]]; then
+if [[ -d letsencrypt/live/$first_domain ]]; then
+    certdir=/etc/letsencrypt/live/$first_domain
     for domain in $domains; do
-        sed -i config/etc/apache2/sites-available/$domain-ssl.conf \
+        sed -i config/etc/apache2/sites-available/$domain-ssl.conf -r \
             -e "s|#?SSLCertificateFile .*|SSLCertificateFile      $certdir/cert.pem|" \
             -e "s|#?SSLCertificateKeyFile .*|SSLCertificateKeyFile   $certdir/privkey.pem|" \
             -e "s|#?SSLCertificateChainFile .*|SSLCertificateChainFile $certdir/chain.pem|"
